@@ -14,11 +14,13 @@
 #![feature(panic_info_message)]
 
 use core::arch::global_asm;
+use log::{debug, error, info, trace, warn};
 
 #[macro_use]
 mod console;
 mod lang_items;
 mod sbi;
+mod my_log;
 
 global_asm!(include_str!("entry.asm"));
 
@@ -41,20 +43,27 @@ pub fn rust_main() -> ! {
         fn erodata();             // end addr of Read-Only data ssegment
         fn sdata();               // start addr of data segment
         fn edata();               // end addr of data segment
-        fn sbss();                // start addr of BSS segment
-        fn ebss();                // end addr of BSS segment
-        fn boot_stack();          // stack bottom
-        fn boot_stack_top();      // stack top
+        // fn sbss();                // start addr of BSS segment
+        // fn ebss();                // end addr of BSS segment
+        // fn boot_stack();          // stack bottom
+        // fn boot_stack_top();      // stack top
     }
     clear_bss();
+    my_log::init();
     println!("Hello, world!");
-    println!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
-    println!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
-    println!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
-    println!(
-        "boot_stack [{:#x}, {:#x})",
-        boot_stack as usize, boot_stack_top as usize
-    );
-    println!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
+    info!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
+    debug!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
+    error!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
+    trace!("This is a trace msg.");
+    warn!("This is a warn msg.");
+
+    // println!(".text [{:#x}, {:#x})", stext as usize, etext as usize);
+    // println!(".rodata [{:#x}, {:#x})", srodata as usize, erodata as usize);
+    // println!(".data [{:#x}, {:#x})", sdata as usize, edata as usize);
+    // println!(
+    //     "boot_stack [{:#x}, {:#x})",
+    //     boot_stack as usize, boot_stack_top as usize
+    // );
+    // println!(".bss [{:#x}, {:#x})", sbss as usize, ebss as usize);
     panic!("Shutdown machine!");
 }
