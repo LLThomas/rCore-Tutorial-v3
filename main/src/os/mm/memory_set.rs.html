@@ -1,9 +1,4 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/mm/memory_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>memory_set.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script src="../../../crates.js"></script><script defer src="../../../main.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script>
-    <noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../os/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a><h2 class="location"></h2>
-    </nav>
-    <nav class="sidebar"><a class="sidebar-logo" href="../../../os/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div>
-        </a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../os/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><div class="theme-picker hidden"><button id="theme-picker" aria-label="Pick another theme!" aria-haspopup="menu" title="themes"><img width="22" height="22" alt="Pick another theme!" src="../../../brush.svg"></button><div id="theme-choices" role="menu"></div></div><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><button type="button" id="help-button" title="help">?</button><a id="settings-menu" href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Source of the Rust file `src/mm/memory_set.rs`."><meta name="keywords" content="rust, rustlang, rust-lang"><title>memory_set.rs - source</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Regular.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../FiraSans-Medium.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Regular.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceSerif4-Bold.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../../../SourceCodePro-Semibold.ttf.woff2"><link rel="stylesheet" type="text/css" href="../../../normalize.css"><link rel="stylesheet" type="text/css" href="../../../rustdoc.css" id="mainThemeStyle"><link rel="stylesheet" type="text/css" href="../../../ayu.css" disabled><link rel="stylesheet" type="text/css" href="../../../dark.css" disabled><link rel="stylesheet" type="text/css" href="../../../light.css" id="themeStyle"><script id="default-settings" ></script><script src="../../../storage.js"></script><script defer src="../../../source-script.js"></script><script defer src="../../../source-files.js"></script><script defer src="../../../main.js"></script><noscript><link rel="stylesheet" href="../../../noscript.css"></noscript><link rel="alternate icon" type="image/png" href="../../../favicon-16x16.png"><link rel="alternate icon" type="image/png" href="../../../favicon-32x32.png"><link rel="icon" type="image/svg+xml" href="../../../favicon.svg"></head><body class="rustdoc source"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle">&#9776;</button><a class="sidebar-logo" href="../../../os/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a><h2 class="location"></h2></nav><nav class="sidebar"><a class="sidebar-logo" href="../../../os/index.html"><div class="logo-container"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></div></a></nav><main><div class="width-limiter"><div class="sub-container"><a class="sub-logo-container" href="../../../os/index.html"><img class="rust-logo" src="../../../rust-logo.svg" alt="logo"></a><nav class="sub"><form class="search-form"><div class="search-container"><span></span><input class="search-input" name="search" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" title="help" tabindex="-1"><button type="button">?</button></div><div id="settings-menu" tabindex="-1"><a href="../../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../../../wheel.svg"></a></div></div></form></nav></div><section id="main-content" class="content"><div class="example-wrap"><pre class="line-numbers"><span id="1">1</span>
 <span id="2">2</span>
 <span id="3">3</span>
 <span id="4">4</span>
@@ -373,6 +368,16 @@
 <span id="368">368</span>
 <span id="369">369</span>
 <span id="370">370</span>
+<span id="371">371</span>
+<span id="372">372</span>
+<span id="373">373</span>
+<span id="374">374</span>
+<span id="375">375</span>
+<span id="376">376</span>
+<span id="377">377</span>
+<span id="378">378</span>
+<span id="379">379</span>
+<span id="380">380</span>
 </pre><pre class="rust"><code><span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">frame_alloc</span>, <span class="ident">FrameTracker</span>};
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">PTEFlags</span>, <span class="ident">PageTable</span>, <span class="ident">PageTableEntry</span>};
 <span class="kw">use</span> <span class="kw">super</span>::{<span class="ident">PhysAddr</span>, <span class="ident">PhysPageNum</span>, <span class="ident">VirtAddr</span>, <span class="ident">VirtPageNum</span>};
@@ -446,7 +451,10 @@
             <span class="self">self</span>.<span class="ident">areas</span>.<span class="ident">remove</span>(<span class="ident">idx</span>);
         }
     }
-    <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">map_area</span>: <span class="ident">MapArea</span>, <span class="ident">data</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) {
+    <span class="doccomment">/// Add a new MapArea into this MemorySet.</span>
+    <span class="doccomment">/// Assuming that there are no conflicts in the virtual address</span>
+    <span class="doccomment">/// space.</span>
+    <span class="kw">pub</span> <span class="kw">fn</span> <span class="ident">push</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>, <span class="kw-2">mut</span> <span class="ident">map_area</span>: <span class="ident">MapArea</span>, <span class="ident">data</span>: <span class="prelude-ty">Option</span><span class="op">&lt;</span><span class="kw-2">&amp;</span>[<span class="ident">u8</span>]<span class="op">&gt;</span>) {
         <span class="ident">map_area</span>.<span class="ident">map</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">page_table</span>);
         <span class="kw">if</span> <span class="kw">let</span> <span class="prelude-val">Some</span>(<span class="ident">data</span>) <span class="op">=</span> <span class="ident">data</span> {
             <span class="ident">map_area</span>.<span class="ident">copy_data</span>(<span class="kw-2">&amp;mut</span> <span class="self">self</span>.<span class="ident">page_table</span>, <span class="ident">data</span>);
@@ -467,14 +475,14 @@
         <span class="comment">// map trampoline</span>
         <span class="ident">memory_set</span>.<span class="ident">map_trampoline</span>();
         <span class="comment">// map kernel sections</span>
-        <span class="macro">println!</span>(<span class="string">&quot;.text [{:#x}, {:#x})&quot;</span>, <span class="ident">stext</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">etext</span> <span class="kw">as</span> <span class="ident">usize</span>);
-        <span class="macro">println!</span>(<span class="string">&quot;.rodata [{:#x}, {:#x})&quot;</span>, <span class="ident">srodata</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">erodata</span> <span class="kw">as</span> <span class="ident">usize</span>);
-        <span class="macro">println!</span>(<span class="string">&quot;.data [{:#x}, {:#x})&quot;</span>, <span class="ident">sdata</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">edata</span> <span class="kw">as</span> <span class="ident">usize</span>);
-        <span class="macro">println!</span>(
-            <span class="string">&quot;.bss [{:#x}, {:#x})&quot;</span>,
-            <span class="ident">sbss_with_stack</span> <span class="kw">as</span> <span class="ident">usize</span>, <span class="ident">ebss</span> <span class="kw">as</span> <span class="ident">usize</span>
-        );
-        <span class="macro">println!</span>(<span class="string">&quot;mapping .text section&quot;</span>);
+        <span class="comment">// println!(&quot;.text [{:#x}, {:#x})&quot;, stext as usize, etext as usize);</span>
+        <span class="comment">// println!(&quot;.rodata [{:#x}, {:#x})&quot;, srodata as usize, erodata as usize);</span>
+        <span class="comment">// println!(&quot;.data [{:#x}, {:#x})&quot;, sdata as usize, edata as usize);</span>
+        <span class="comment">// println!(</span>
+        <span class="comment">//     &quot;.bss [{:#x}, {:#x})&quot;,</span>
+        <span class="comment">//     sbss_with_stack as usize, ebss as usize</span>
+        <span class="comment">// );</span>
+        <span class="comment">// println!(&quot;mapping .text section&quot;);</span>
         <span class="ident">memory_set</span>.<span class="ident">push</span>(
             <span class="ident">MapArea::new</span>(
                 (<span class="ident">stext</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">into</span>(),
@@ -484,7 +492,7 @@
             ),
             <span class="prelude-val">None</span>,
         );
-        <span class="macro">println!</span>(<span class="string">&quot;mapping .rodata section&quot;</span>);
+        <span class="comment">// println!(&quot;mapping .rodata section&quot;);</span>
         <span class="ident">memory_set</span>.<span class="ident">push</span>(
             <span class="ident">MapArea::new</span>(
                 (<span class="ident">srodata</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">into</span>(),
@@ -494,7 +502,7 @@
             ),
             <span class="prelude-val">None</span>,
         );
-        <span class="macro">println!</span>(<span class="string">&quot;mapping .data section&quot;</span>);
+        <span class="comment">// println!(&quot;mapping .data section&quot;);</span>
         <span class="ident">memory_set</span>.<span class="ident">push</span>(
             <span class="ident">MapArea::new</span>(
                 (<span class="ident">sdata</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">into</span>(),
@@ -504,7 +512,7 @@
             ),
             <span class="prelude-val">None</span>,
         );
-        <span class="macro">println!</span>(<span class="string">&quot;mapping .bss section&quot;</span>);
+        <span class="comment">// println!(&quot;mapping .bss section&quot;);</span>
         <span class="ident">memory_set</span>.<span class="ident">push</span>(
             <span class="ident">MapArea::new</span>(
                 (<span class="ident">sbss_with_stack</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">into</span>(),
@@ -514,7 +522,7 @@
             ),
             <span class="prelude-val">None</span>,
         );
-        <span class="macro">println!</span>(<span class="string">&quot;mapping physical memory&quot;</span>);
+        <span class="comment">// println!(&quot;mapping physical memory&quot;);</span>
         <span class="ident">memory_set</span>.<span class="ident">push</span>(
             <span class="ident">MapArea::new</span>(
                 (<span class="ident">ekernel</span> <span class="kw">as</span> <span class="ident">usize</span>).<span class="ident">into</span>(),
@@ -524,7 +532,7 @@
             ),
             <span class="prelude-val">None</span>,
         );
-        <span class="macro">println!</span>(<span class="string">&quot;mapping memory-mapped registers&quot;</span>);
+        <span class="comment">//println!(&quot;mapping memory-mapped registers&quot;);</span>
         <span class="kw">for</span> <span class="ident">pair</span> <span class="kw">in</span> <span class="ident">MMIO</span> {
             <span class="ident">memory_set</span>.<span class="ident">push</span>(
                 <span class="ident">MapArea::new</span>(
@@ -661,6 +669,11 @@
                 <span class="ident">ppn</span> <span class="op">=</span> <span class="ident">frame</span>.<span class="ident">ppn</span>;
                 <span class="self">self</span>.<span class="ident">data_frames</span>.<span class="ident">insert</span>(<span class="ident">vpn</span>, <span class="ident">frame</span>);
             }
+            <span class="ident">MapType::Linear</span>(<span class="ident">pn_offset</span>) =&gt; {
+                <span class="comment">// check for sv39</span>
+                <span class="macro">assert!</span>(<span class="ident">vpn</span>.<span class="number">0</span> <span class="op">&lt;</span> (<span class="number">1usize</span> <span class="op">&lt;</span><span class="op">&lt;</span> <span class="number">27</span>));
+                <span class="ident">ppn</span> <span class="op">=</span> <span class="ident">PhysPageNum</span>((<span class="ident">vpn</span>.<span class="number">0</span> <span class="kw">as</span> <span class="ident">isize</span> <span class="op">+</span> <span class="ident">pn_offset</span>) <span class="kw">as</span> <span class="ident">usize</span>);
+            }
         }
         <span class="kw">let</span> <span class="ident">pte_flags</span> <span class="op">=</span> <span class="ident">PTEFlags::from_bits</span>(<span class="self">self</span>.<span class="ident">map_perm</span>.<span class="ident">bits</span>).<span class="ident">unwrap</span>();
         <span class="ident">page_table</span>.<span class="ident">map</span>(<span class="ident">vpn</span>, <span class="ident">ppn</span>, <span class="ident">pte_flags</span>);
@@ -709,6 +722,8 @@
 <span class="kw">pub</span> <span class="kw">enum</span> <span class="ident">MapType</span> {
     <span class="ident">Identical</span>,
     <span class="ident">Framed</span>,
+    <span class="doccomment">/// offset of page num</span>
+    <span class="ident">Linear</span>(<span class="ident">isize</span>),
 }
 
 <span class="macro">bitflags!</span> {
@@ -744,5 +759,4 @@
     <span class="macro">println!</span>(<span class="string">&quot;remap_test passed!&quot;</span>);
 }
 </code></pre></div>
-</section><section id="search" class="content hidden"></section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="os" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.62.0-nightly (1f7fb6413 2022-04-10)" ></div>
-</body></html>
+</section></div></main><div id="rustdoc-vars" data-root-path="../../../" data-current-crate="os" data-themes="ayu,dark,light" data-resource-suffix="" data-rustdoc-version="1.64.0-nightly (f6f9d5e73 2022-08-04)" ></div></body></html>

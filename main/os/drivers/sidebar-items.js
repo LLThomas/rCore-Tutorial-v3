@@ -1,1 +1,1 @@
-initSidebarItems({"mod":[["block",""],["chardev",""],["plic",""]]});
+window.SIDEBAR_ITEMS = {"mod":[["block",""],["bus",""],["chardev",""],["gpu",""],["input",""],["plic",""]]};
